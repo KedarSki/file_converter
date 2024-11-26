@@ -1,59 +1,85 @@
 from tkinter import *
-import pathlib
 from tkinter import filedialog
-
-window = Tk()
-
-icon_path = pathlib.Path("assets", "logo.png")
-icon = PhotoImage(file=icon_path)
+from docx2pdf import convert
+from pdf2docx.converter import Converter
+import pathlib
 
 
-def file_browser():
-    filename = filedialog.askopenfilename(
-        initialdir="/",
-        title="Select a file",
-        filetypes=(("Word files", "*.docx*"), ("Pdf files", "*.pdf*")),
-    )
-    input_file.delete(0, END)
-    input_file.insert(0, filename)
+class FileConverterApp:
+    def __init__(self):
+        self.window = Tk()
+        self.window.title("Docx - PDF Converter")
+        self.window.geometry("600x200")
+        self.window.config(background="#2b2a2a")
+
+        icon_path = pathlib.Path("assets", "logo.png")
+        try:
+            self.icon = PhotoImage(file=icon_path)
+            self.window.iconphoto(True, self.icon)
+        except Exception:
+            print("Icon file not found. Skipping icon setup.")
+
+        self.input_file = None
+        self.filename = None
+
+        self.setup_ui()
+
+    def setup_ui(self):
+
+        label = Label(
+            self.window,
+            text="Input file",
+            font=("Arial", 12, "bold"),
+            fg="#029bfa",
+            bg="#2b2a2a",
+        )
+        label.place(x=230, y=20)
+
+        self.input_file = Entry(self.window, width=40)
+        self.input_file.place(x=80, y=60, height=30)
+
+        browse_button = Button(
+            self.window,
+            text="Browse Files",
+            command=self.file_browser,
+            font=("Arial", 10, "bold"),
+            bg="#029bfa",
+            fg="white",
+            width=12,
+        )
+        browse_button.place(x=400, y=60, height=30)
+
+        convert_button = Button(
+            self.window,
+            text="Convert",
+            command=self.file_convert,
+            font=("Arial", 10, "bold"),
+            bg="#029bfa",
+            fg="white",
+            width=12,
+        )
+        convert_button.place(x=240, y=110, height=30)
+
+    def file_browser(self):
+        self.filename = filedialog.askopenfilename(
+            initialdir="/",
+            title="Select a file",
+            filetypes=(("Word files", "*.docx*"), ("Pdf files", "*.pdf*")),
+        )
+        if self.filename:
+            self.input_file.delete(0, END)
+            self.input_file.insert(0, self.filename)
+
+    def file_convert(self):
+        if not self.filename:
+            self.input_file.delete(0, END)
+            self.input_file.insert(0, "PLEASE SELECT THE FILE!")
+            return
+
+    def run(self):
+        self.window.mainloop()
 
 
-window.title("Docx - PDF Converter")
-window.geometry("600x400")
-window.iconphoto(True, icon)
-window.config(background="#2b2a2a")
-
-# Label
-label = Label(
-    window, text="Input file", font=("Arial", 12, "bold"), fg="#029bfa", bg="#2b2a2a"
-)
-label.place(x=190, y=40)
-
-# Pole tekstowe
-input_file = Entry(window, width=40)
-input_file.place(x=80, y=70, height=30)
-
-# Przycisk "Browse Files"
-button_explore = Button(
-    window,
-    text="Browse Files",
-    command=file_browser,
-    font=("Arial", 10, "bold"),
-    bg="#029bfa",
-    fg="white",
-    width=12,
-)
-button_explore.place(x=350, y=70, height=30)
-
-# Przycisk "Convert"
-button_convert = Button(
-    window,
-    text="Convert",
-    font=("Arial", 10, "bold"),
-    bg="#029bfa",
-    fg="white",
-    width=12,
-)
-button_convert.place(x=180, y=120, height=30)
-
-window.mainloop()
+if __name__ == "__main__":
+    app = FileConverterApp()
+    app.run()
