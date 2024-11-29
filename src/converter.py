@@ -64,8 +64,7 @@ class FileConverterApp:
         self.filename = filedialog.askopenfilename(
             initialdir="/",
             title="Select a file",
-            filetypes=(("Word files", "*.docx*"), ("Pdf files", "*.pdf*"), ("Text files", "*.txt*")),
-        )
+            filetypes=(("All files", "*.*"), ("Word files", "*.docx*"), ("Pdf files", "*.pdf*"), ("Text files", "*.txt*")))
         if self.filename:
             self.input_file.delete(0, END)
             self.input_file.insert(0, self.filename)
@@ -77,11 +76,12 @@ class FileConverterApp:
             return
         if self.filename.endswith(".docx"):
             convert(
-                self.filename,self.filename.endswith(".pdf"))
+                self.filename, self.filename.endswith(".pdf"))
         elif self.filename.endswith(".pdf"):
             parse(self.filename, self.filename.endswith(".docx"))
-
-
+        elif self.filename.endswith(".txt"):
+            convert(
+                self.filename, self.filename.endswith(".pdf"))
 
     def run(self):
         self.window.mainloop()
