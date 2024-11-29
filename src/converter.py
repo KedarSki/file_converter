@@ -126,7 +126,10 @@ class FileConverterApp:
 
             output_file = filedialog.asksaveasfilename(
                 defaultextension=f".{to_format}",
-                filetypes=((f"{to_format.upper()} files", f"*.{to_format}"), ("All files", "*.*")),
+                filetypes=(
+                    (f"{to_format.upper()} files", f"*.{to_format}"),
+                    ("All files", "*.*"),
+                ),
             )
 
             if not output_file:
